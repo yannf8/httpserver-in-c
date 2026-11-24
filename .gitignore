@@ -1,0 +1,7 @@
+build/
+notes/
+*.o
+*.d
+core
+core.*
+perf.data*

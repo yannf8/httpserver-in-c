@@ -1,0 +1,56 @@
+#	id	kind	title	doc
+0.0	free	Toolchain and harness self-check	docs/00-orientation.md
+0.1	unit	Your first syscall: write(2)	docs/00-orientation.md
+0.2	unit	errno, and what failure looks like	docs/00-orientation.md
+0.3	manual	Read the manual: man, strace, /proc	docs/00-orientation.md
+1.0	unit	syscall(): underneath the libc wrapper	docs/01-syscalls.md
+1.1	unit	write_all: short writes and EINTR	docs/01-syscalls.md
+1.2	unit	read_full: a short read is not EOF	docs/01-syscalls.md
+1.3	unit	read_file: open, loop, close	docs/01-syscalls.md
+1.4	unit	writev: several buffers, one syscall	docs/01-syscalls.md
+1.5	unit	Descriptor hygiene: prove there is no leak	docs/01-syscalls.md
+2.0	unit	socket(2)	docs/02-sockets.md
+2.1	unit	Byte order and sockaddr_in	docs/02-sockets.md
+2.2	unit	SO_REUSEADDR	docs/02-sockets.md
+2.3	unit	bind(2)	docs/02-sockets.md
+2.4	unit	listen(2) and getsockname(2)	docs/02-sockets.md
+2.5	unit	accept(2)	docs/02-sockets.md
+2.6	unit	connect(2): be your own client	docs/02-sockets.md
+2.7	unit	listen_on: the four-step server socket	docs/02-sockets.md
+2.8	unit	EOF, shutdown and the half-close	docs/02-sockets.md
+2.9	unit	SIGPIPE and EPIPE	docs/02-sockets.md
+3.0	unit	ASCII helpers: iequals and OWS	docs/03-http.md
+3.1	unit	The request line	docs/03-http.md
+3.2	unit	The header block	docs/03-http.md
+3.3	unit	An incremental parser	docs/03-http.md
+3.4	unit	Content-Length and bodies	docs/03-http.md
+3.5	unit	Building responses, and the Date header	docs/03-http.md
+3.6	unit	Keep-alive rules	docs/03-http.md
+3.7	unit	Paths, percent-decoding, traversal	docs/03-http.md
+3.8	unit	Chunked transfer decoding (advanced)	docs/03-http.md
+4.0	integration	The accept loop: your first 200 OK	docs/04-blocking-server.md
+4.1	integration	Serving static files	docs/04-blocking-server.md
+4.2	integration	Error responses: 404, 400, 405	docs/04-blocking-server.md
+4.3	integration	The docroot as a security boundary	docs/04-blocking-server.md
+4.4	integration	Keep-alive and pipelining	docs/04-blocking-server.md
+4.5	integration	HEAD	docs/04-blocking-server.md
+4.6	integration	Read timeouts	docs/04-blocking-server.md
+5.0	unit	O_NONBLOCK and EAGAIN	docs/05-concurrency.md
+5.1	unit	epoll_create1, epoll_ctl, epoll_wait	docs/05-concurrency.md
+5.2	unit	Partial writes and EPOLLOUT	docs/05-concurrency.md
+5.3	integration	The event loop serves a request	docs/05-concurrency.md
+5.4	integration	Many connections at once	docs/05-concurrency.md
+5.5	integration	No head-of-line blocking	docs/05-concurrency.md
+5.6	integration	Pipelining in the event loop	docs/05-concurrency.md
+5.7	unit	SO_REUSEPORT and one loop per core	docs/05-concurrency.md
+6.0	unit	clock_gettime: measuring honestly	docs/06-low-latency.md
+6.1	unit	Percentiles, not averages	docs/06-low-latency.md
+6.2	unit	TCP_NODELAY and Nagle	docs/06-low-latency.md
+6.3	unit	CPU affinity	docs/06-low-latency.md
+6.4	integration	Your own load generator	docs/06-low-latency.md
+6.5	integration	sendfile: fewer copies	docs/06-low-latency.md
+6.6	manual	perf, flame graphs, allocation audit	docs/06-low-latency.md
+7.0	unit	Fuzz the parser	docs/07-hardening.md
+7.1	unit	Limits and hostile input	docs/07-hardening.md
+7.2	integration	Slowloris	docs/07-hardening.md
+7.3	integration	Graceful shutdown	docs/07-hardening.md
