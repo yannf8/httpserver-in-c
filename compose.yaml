@@ -1,0 +1,35 @@
+# Dev container for the course.
+#
+#   docker compose up -d --build     start it (first run builds the image)
+#   docker compose exec dev bash     open a shell; repeat for more shells
+#   docker compose down              stop it
+#
+# The repo is mounted at /work, so you edit on the host or in the container,
+# whichever you prefer, and nothing is lost when the container goes away.
+
+services:
+  dev:
+    build:
+      context: .
+      args:
+        # Match your host user so files in build/ are yours. If `id -u` is not
+        # 1000, start with:  HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose up -d --build
+        USER_UID: ${HOST_UID:-1000}
+        USER_GID: ${HOST_GID:-1000}
+    image: httpserver-in-c-dev
+    hostname: httpserver
+    volumes:
+      - .:/work:z            # :z relabels for SELinux hosts; harmless elsewhere
+    init: true
+    # gdb and strace need ptrace; gdb also disables ASLR, which the default
+    # seccomp profile blocks. AddressSanitizer's leak checker needs ptrace too.
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+    # Your server binds 127.0.0.1 inside the container, which the host cannot
+    # reach. This relay forwards http://localhost:8080 on the host to
+    # 127.0.0.1:8080 in the container, so `make run` can be opened in a browser.
+    ports:
+      - "127.0.0.1:8080:8000"
+    command: socat TCP-LISTEN:8000,fork,reuseaddr TCP:127.0.0.1:8080

@@ -41,7 +41,61 @@ Requirements: Linux, `g++` (or `clang++`) with C++20, GNU make, Python 3.8+ for
 the end-to-end tests. All present on any normal Linux box; nothing else to
 install.
 
+Not on Linux, or would rather not install anything? Use the Docker container
+below. It works the same on macOS, Windows and Linux.
+
 Then open `docs/00-orientation.md` and start at section 0.1.
+
+---
+
+## Running in Docker
+
+Everything this course uses is in the container: the compiler, `gdb`, `strace`,
+`perf`, `curl`, `nc`, `ss`, and the man pages (`man 2 write` works). Your copy of
+the repo is mounted at `/work`, so you can edit with your usual editor on the host
+and build in the container. Nothing is lost when the container stops.
+
+You need Docker with Compose (Docker Desktop on macOS/Windows, or Docker Engine
+on Linux).
+
+```bash
+git clone https://github.com/yannf8/httpserver-in-c.git
+cd httpserver-in-c
+
+docker compose up -d --build     # first time: builds the image (a few minutes)
+docker compose exec dev bash     # a shell inside, in /work
+
+# inside the container, everything from Quick start works as-is
+make
+make status
+```
+
+Open as many shells as you like with `docker compose exec dev bash`. You want two
+in module 4: one runs the server and the other talks to it.
+
+```bash
+# shell 1                          # shell 2
+make run                           curl -v http://127.0.0.1:8080/
+```
+
+**From a browser on your machine**, open <http://localhost:8080/>. Your server
+binds `127.0.0.1` inside the container, which the host cannot reach directly, so
+the container runs a small relay that forwards host port 8080 to it. If nothing is
+listening on 8080 inside, the browser just gets an empty reply.
+
+**Stop it** with `docker compose down`. Your files stay where they are; next time
+`docker compose up -d` starts again in seconds.
+
+| situation | what to do |
+| --- | --- |
+| Files in `build/` are owned by root or another user | your host UID is not 1000. Rebuild with `HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose up -d --build` |
+| Port 8080 on your machine is already taken | change the left side of `"127.0.0.1:8080:8000"` in `compose.yaml`, e.g. `9090`, and browse to that port |
+| `perf` says it has no permission | `perf` needs the host to allow it: run `sudo sysctl kernel.perf_event_paranoid=1` on the host (Linux), or do module 6.6 on a Linux host |
+| You use Podman | `podman build --build-arg USER_UID=$(id -u) --build-arg USER_GID=$(id -g) -t httpserver-in-c-dev .` then `podman run --rm -it --userns=keep-id -v "$PWD":/work:z --cap-add=SYS_PTRACE --security-opt seccomp=unconfined httpserver-in-c-dev` (no browser relay this way; use `curl` inside) |
+
+Latency numbers measured inside a container (module 6) include Docker's
+networking and, on macOS/Windows, a virtual machine. They are fine for comparing
+your own before/after changes, but they are not your hardware's real floor.
 
 ---
 
@@ -135,6 +189,8 @@ tests/
 docs/                theory per module, plus HINTS.md and further reading
 tools/               status.py (the ladder), syllabus.tsv
 www/                 default docroot for playing by hand
+Dockerfile           the dev container's toolchain
+compose.yaml         how it runs: repo mounted at /work, port 8080 relayed to the host
 ```
 
 Rules of the road:
