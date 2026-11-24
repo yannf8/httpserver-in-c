@@ -18,7 +18,7 @@ ssize_t write_str(int fd, std::string_view s) {
     // it returns. `man 2 write` tells you everything you need.
     (void)fd;
     (void)s;
-    return kUnimplemented;
+    return write(fd, s.data(), s.size());
 }
 
 // 0.2 — errno
@@ -27,7 +27,14 @@ int errno_for_open(const char* path) {
     // close the fd and return 0. Remember: errno is only meaningful *after* a
     // call that actually failed.
     (void)path;
-    return kUnimplemented;
+    int fd = open(path, O_RDONLY);
+    if( fd == -1){
+        return errno;
+    }
+    
+    close(fd);
+    //technically close could also fail. see man 2 open, under ERRORS
+    return 0;
 }
 
 }  // namespace hx::m0
